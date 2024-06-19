@@ -6,7 +6,7 @@ export default function SigninPage() {
       <div className="font-[sans-serif] text-[#333]">
         <div className="min-h-screen flex flex-col items-center justify-center">
           <div className="flex flex-col items-center mb-24 mt-8">
-            <img src="vistar-logo.png" className="mb-4" />
+            <img src="vistar-logo.png" alt="Vistar logo" className="mb-4" />
             <p className="text-3xl font-extrabold">
               National Account Information
             </p>
@@ -73,7 +73,7 @@ export default function SigninPage() {
               <img
                 src="vistar-truck.jpg"
                 className="absolute inset-0 w-full h-full object-cover"
-                alt="login-image"
+                alt="Vistar truck on login"
               />
             </div>
           </div>

@@ -1,7 +1,12 @@
-"use client";
-import { useState } from "react";
+import { useState, ChangeEventHandler } from "react";
 
-const PasswordInput = () => {
+interface PasswordInputProps {
+  value: string;
+  onChange: ChangeEventHandler<HTMLInputElement>;
+}
+
+
+const PasswordInput: React.FC<PasswordInputProps> = ({value, onChange}) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const togglePasswordVisibility = () => {
@@ -16,6 +21,8 @@ const PasswordInput = () => {
           name="password"
           type={showPassword ? 'text' : 'password'}
           required
+          value={value}
+          onChange={onChange}
           className="w-full text-sm border-b border-gray-300 focus:border-[#333] px-2 py-3 outline-none"
           placeholder="Enter password"
         />

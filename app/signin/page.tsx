@@ -1,8 +1,37 @@
+"use client";
 import { useState } from"react";
 import Footer from "../footer/page";
 import PasswordInput from "./passwordComponent";
 
 export default function SigninPage() {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const response = await fetch('/api/authenticate', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (response.ok) {
+        // Authentication successful
+        window.location.href = "../browsepage"; // Redirect to dashboard or next page
+      } else {
+        const data = await response.json();
+        setError(data.message || "Authentication failed");
+      }
+    } catch (error) {
+      console.error("Error during sign-in:", error);
+      setError("Internal Server Error-Sign In Page");
+    }
+  };
+
   return (
     <>
       <div className="font-[sans-serif] text-[#333]">
@@ -15,7 +44,7 @@ export default function SigninPage() {
           </div>
           <div className="grid md:grid-cols-2 items-center gap-4 max-w-6xl w-full p-4 m-4 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] rounded-md">
             <div className="md:max-w-md w-full sm:px-6 py-4">
-              <form>
+              <form onSubmit={handleSignIn}>
                 <div className="mb-12">
                   <h3 className="text-3xl font-extrabold">Sign in</h3>
                 </div>
@@ -26,19 +55,25 @@ export default function SigninPage() {
                       name="username"
                       type="text"
                       required
+                      value = {username}
+                      onChange={(e) => setUsername(e.target.value)}
                       className="w-full text-sm border-b border-gray-300 focus:border-[#333] px-2 py-3 outline-none"
                       placeholder="Enter Username"
                     />
                   </div>
                 </div>
-                <PasswordInput/>
+                <PasswordInput
+                  value = {password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
                 <div className="flex items-center justify-between gap-2 mt-5">
                   <div className="flex items-center"></div>
                   <div></div>
                 </div>
+                {error && <p className="text-red-500">{error}</p>}
                 <div className="mt-12">
                   <button
-                    type="button"
+                    type="submit"
                     className="w-full shadow-xl py-2.5 px-4 text-sm font-semibold rounded-full text-white bg-vistarGreen hover:bg-vistarGreenHover focus:outline-none"
                   >
                     Sign in

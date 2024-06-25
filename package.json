@@ -11,14 +11,16 @@
   "dependencies": {
     "@mapbox/node-pre-gyp": "^1.0.11",
     "aws-sdk": "^2.1646.0",
+    "body-parser": "^1.20.2",
     "mock-aws-s3": "^4.0.2",
     "next": "14.2.4",
-    "next-auth": "^4.24.7",
+    "next-auth": "^5.0.0-beta.19",
     "nock": "^13.5.4",
     "react": "^18",
     "react-dom": "^18"
   },
   "devDependencies": {
+    "@types/body-parser": "^1.19.5",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

@@ -1,8 +1,23 @@
 "use server"
 import { NextApiRequest, NextApiResponse } from "next";
 import odbc from 'odbc'; // Import 'odbc' package from global npm installation
+import bodyParser from 'body-parser';
+import { parse } from "path";
+
+// Middleware wrapper to convert Express-style middleware to Next.js API route compatible middleware
+function runMiddleware(req: NextApiRequest, res: NextApiResponse, fn: Function) {
+  return new Promise((resolve, reject) => {
+    fn(req, res, (result: any) => {
+      if (result instanceof Error) {
+        return reject(result);
+      }
+      return resolve(result);
+    });
+  });
+}
 
 const db = require("odbc");
+const parseJson = bodyParser.json();
 
 export async function POST(
   req: NextApiRequest,
@@ -13,6 +28,8 @@ export async function POST(
   }
 
   let { username, password } = req.body;
+
+  await runMiddleware(req, res, parseJson);
   console.log("Request Body:", req.body);
 
   // Ignore the case of username and password

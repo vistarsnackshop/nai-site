@@ -1,4 +1,9 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+    experimental: {
+        appDir: true,
+        serverComponentsExternalPackages: ['odbc'],
+    },
+};
 
 export default nextConfig;

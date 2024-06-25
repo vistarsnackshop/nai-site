@@ -1,9 +1,10 @@
+"use server"
 import { NextApiRequest, NextApiResponse } from "next";
 import odbc from 'odbc'; // Import 'odbc' package from global npm installation
 
 const db = require("odbc");
 
-export default async function handler(
+export async function POST(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
@@ -12,6 +13,7 @@ export default async function handler(
   }
 
   let { username, password } = req.body;
+  console.log("Request Body:", req.body);
 
   // Ignore the case of username and password
   username = username.toUpperCase();
@@ -19,11 +21,14 @@ export default async function handler(
 
   try {
     // Establish ODBC connection to your database
+    console.log("Attempting to connect to database...");
     const connection = await odbc.connect('DSN=B4799;UID=VSAUSER;PWD=VSAUSER');
      
     // Query database for user based on username
+    console.log("Attempting to query to database...");
     const user = await db.query("SELECT CCUSTNUM, PROITMONLY, USRPWD FROM nai.USERS WHERE USRPRF = ?", [username]);
-
+    console.log("Query result:", user);
+    
     if (user.length === 0) {
       return res.status(401).json({ message: "Invalid credentials" });
     }

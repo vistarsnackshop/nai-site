@@ -1,5 +1,5 @@
 "use client";
-import { useState } from"react";
+import { useState } from "react";
 import Footer from "../footer/page";
 import PasswordInput from "./passwordComponent";
 

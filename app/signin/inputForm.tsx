@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { FormEvent } from "react";
 import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const InputForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -10,6 +11,7 @@ const InputForm = () => {
     setShowPassword(!showPassword);
   };
 
+  const router = useRouter();
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -19,6 +21,11 @@ const InputForm = () => {
       redirect: false, 
     });
     console.log({ response });
+
+    if (!response?.error) {
+      router.push("/browsepage");
+      router.refresh();
+    }
   };
 
   return (

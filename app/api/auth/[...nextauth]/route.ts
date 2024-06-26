@@ -16,13 +16,11 @@ const handler = NextAuth({
       },
       async authorize(credentials, req) {
         const connection = await odbc.connect(connectionString);
-        const response = await connection.query("SELECT * FROM nai.USERS where USPRF=?", [credentials?.username.toUpperCase()]);
-        console.log(response[0]);
+        const response = await connection.query("SELECT * FROM nai.USERS where USRPRF = ?", [credentials?.username.toUpperCase()]);
+
         const user = response[0];
 
         const passwordCorrect = (credentials?.password.toUpperCase() || '') == user.USRPWD.trim();
-
-        console.log({ passwordCorrect });
 
         if (passwordCorrect){
             return {

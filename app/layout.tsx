@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { getServerSession } from "next-auth";
+import {Providers} from "./providers";
 
 export const metadata: Metadata = {
   title: "Vistar NAI",
@@ -15,7 +16,11 @@ export default async function RootLayout({
   const session = await getServerSession();
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <Providers>
+          {children}
+        </Providers>
+      </body>
     </html>
   );
 }

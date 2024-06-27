@@ -2,16 +2,30 @@
 import { useState } from "react";
 import { FormEvent } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useCallback } from "react";
+
 
 const InputForm = () => {
+  const router = useRouter();
+
+  const createQueryString = useCallback(
+    (name: string, value:string) => {
+      const params = new URLSearchParams();
+      params.set(name, value);
+
+      return params.toString();
+    },
+    []
+  );
+
   const [showPassword, setShowPassword] = useState(false);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
-  const router = useRouter();
+  
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -20,10 +34,9 @@ const InputForm = () => {
       password: formData.get('password'),
       redirect: false, 
     });
-    console.log({ response });
 
     if (!response?.error) {
-      router.push("/browsepage");
+      router.push(`/browsepage?${createQueryString("username", formData.get('username') as string)}`);
       router.refresh();
     }
   };

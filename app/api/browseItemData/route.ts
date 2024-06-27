@@ -1,6 +1,7 @@
 
 import { NextApiRequest, NextApiResponse } from "next";
 
+
 const odbc = require('odbc');
 
 const connectionString = 'DSN=B4799;UID=VSAUSER;PWD=VSAUSER';

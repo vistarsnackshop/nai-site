@@ -3,6 +3,13 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { NextRequest } from "next/server";
 import { useSearchParams } from "next/navigation";
 
+const currentDate = new Date();
+const year = currentDate.getFullYear();
+const month = currentDate.getMonth() + 1; // getMonth() returns 0-based month
+const day = currentDate.getDate();
+// Combine the year, month, and day into the format YYYYMMDD
+const dateAsInteger = day + 100 * month + 10000 * year;
+
 const getParamsObject = (request: NextRequest): { [key: string]: string } => {
   const params: { [key: string]: string } = {};
   for (const [key, val] of request.nextUrl.searchParams.entries()) {
@@ -20,9 +27,9 @@ async function fetchData(username:string) {
   try {
     const db = await odbc.connect(connectionString);
     const custNum = await db.query('select CCUSTNUM from nai.USERS where USRPRF = ?', [username.toUpperCase()]);
-    const items = await db.query('select A.ITMID, A.ITEMDS, B.ITMCLSCD, B.PRMSUPID, B.PCKDS from nai.CCUSTITEM A join renuatdta.ICITEM B on A.ITMID = B.ITMID where STEREFDS = ? order by B.ITMID', [custNum[0].CCUSTNUM]);
+    const bids = await db.query('select distinct D.WHSID, D.WHSNMDS, C.BDID, C.BDDESC, A.STEREFDS from renuatdta.CMSHIP A join renuatdta.PCSHBD B on A.CTMSHIID = B.CTMSHIID join renuatdta.PCBDHD C on B.BDID = C.BDID and C.BDEFFTDT <= ? and C.BDEXPDT > ? join renuatdta.ICWHSE D on C.BDWHSID = D.WHSID where A.STEREFDS = ? order by D.WHSID, C.BDID',[dateAsInteger.toString(), dateAsInteger.toString(), custNum[0].CCUSTNUM]);
     await db.close();
-    return items;
+    return bids;
   } catch (error) {
     console.error('Error fetching data:', error);
     return [];

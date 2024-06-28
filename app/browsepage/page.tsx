@@ -35,7 +35,7 @@ export default function browsePage() {
               </h3>
             </div>
             <div className="grid md:grid-cols-3 items-center gap-8 max-w-6xl w-full p-10 m-4 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] rounded-md">
-            <Link href={`/browseitems?${createQueryString("username", username as string)}`}>
+              <Link href={`/browseitems?${createQueryString("username", username as string)}`}>
                 <div className="md:max-w-md w-full h-full sm:px-6 py-4 flex items-center justify-center shadow-xl rounded-2xl hover:shadow-2xl transform hover:scale-110 transition duration-300 ease-in-out">
                   <div className="flex flex-col items-center justify-center">
                     <img src="browsing-item.png" alt="Browse by item"/>
@@ -44,23 +44,27 @@ export default function browsePage() {
                     </h3>
                   </div>
                 </div>
-            </Link>
-              <div className="md:max-w-md w-full h-full sm:px-6 py-4 flex items-center justify-center shadow-xl rounded-2xl hover:shadow-2xl transform hover:scale-110 transition duration-300 ease-in-out">
-                <div className="flex flex-col items-center justify-center">
-                  <img src="browsing-bid.png" alt="Browse by bid"/>
-                  <h3 className="text-3xl font-extrabold text-center">
-                    Bid
-                  </h3>
+              </Link>
+              <Link href={`/browsebids?${createQueryString("username", username as string)}`}>
+                <div className="md:max-w-md w-full h-full sm:px-6 py-4 flex items-center justify-center shadow-xl rounded-2xl hover:shadow-2xl transform hover:scale-110 transition duration-300 ease-in-out">
+                  <div className="flex flex-col items-center justify-center">
+                    <img src="browsing-bid.png" alt="Browse by bid"/>
+                    <h3 className="text-3xl font-extrabold text-center">
+                      Bid
+                    </h3>
+                  </div>
                 </div>
-              </div>
-              <div className="md:max-w-md w-full h-full sm:px-6 py-4 flex items-center justify-center shadow-xl rounded-2xl hover:shadow-2xl transform hover:scale-110 transition duration-300 ease-in-out">
-                <div className="flex flex-col items-center justify-center">
-                  <img src="browsing-opco.png"/>
-                  <h3 className="text-3xl font-extrabold text-center">
-                    Operating Company
-                  </h3>
+              </Link>
+              <Link href={`/browseopco?${createQueryString("username", username as string)}`}>
+                <div className="md:max-w-md w-full h-full sm:px-6 py-4 flex items-center justify-center shadow-xl rounded-2xl hover:shadow-2xl transform hover:scale-110 transition duration-300 ease-in-out">
+                  <div className="flex flex-col items-center justify-center">
+                    <img src="browsing-opco.png"/>
+                    <h3 className="text-3xl font-extrabold text-center">
+                      Operating Company
+                    </h3>
+                  </div>
                 </div>
-              </div>
+              </Link>
             </div>
           </div>
           <Footer />

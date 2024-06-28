@@ -2,15 +2,15 @@
 import React from "react";
 import {Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, getKeyValue, Spinner} from "@nextui-org/react";
 import {useAsyncList} from "@react-stately/data";
-import { Item, columns } from "../browseitems/column";
+import { Bid, columns } from "../browsebids/column";
 import { useSearchParams } from "next/navigation";
 
 
 
-export default function BrowseItems() {
+export default function BrowseBids() {
     //get query to connect to this table without having to hardcode
     const fetchData = async (username: string) => {
-        let res = await fetch(`http://localhost:3000/api/browseItemData?username=${username}`,);
+        let res = await fetch(`http://localhost:3000/api/browseBidData?username=${username}`,);
         let json = await res.json();
         return json;
     };
@@ -20,7 +20,7 @@ export default function BrowseItems() {
 
     const [isLoading, setIsLoading] = React.useState(true);
   
-    let list = useAsyncList<Item>({
+    let list = useAsyncList<Bid>({
         async load() {
             let res = await fetchData(username as string);
             //let json = await res.json();
@@ -32,9 +32,9 @@ export default function BrowseItems() {
 
         async sort({items, sortDescriptor}) {
             return {
-                items: items.sort((a:Item, b:Item) => {
-                let first = a[sortDescriptor.column as keyof Item];
-                let second = b[sortDescriptor.column as keyof Item];
+                items: items.sort((a:Bid, b:Bid) => {
+                let first = a[sortDescriptor.column as keyof Bid];
+                let second = b[sortDescriptor.column as keyof Bid];
 
                 // Attempt to parse the values as floats
                 const firstNumber = parseFloat(first as string);
@@ -65,7 +65,7 @@ export default function BrowseItems() {
             };
         },
     });
-  
+
     return (
       <Table
         aria-label="Example table with client side sorting"
@@ -76,8 +76,10 @@ export default function BrowseItems() {
         }}
       >
         <TableHeader>
-          <TableColumn key="ITMID" allowsSorting>Item No.</TableColumn>
-          <TableColumn key="ITEMDS" allowsSorting>Item Description</TableColumn>
+          <TableColumn key="WHSID" allowsSorting>Operating Co. ID</TableColumn>
+          <TableColumn key="WHSNMDS" allowsSorting>Operating Co.</TableColumn>
+          <TableColumn key="BDID" allowsSorting>Bid</TableColumn>
+          <TableColumn key="BDDESC">Bid Description</TableColumn>
         </TableHeader>
         <TableBody 
           items={list.items} 
@@ -85,12 +87,12 @@ export default function BrowseItems() {
           loadingContent={<Spinner label="Loading..." />}
         >
           {(item) => (
-            <TableRow key={item.ITMID}>
+            <TableRow key={item.BDID}>
               {(columnKey) => <TableCell>{getKeyValue(item, columnKey)}</TableCell>}
             </TableRow>
           )}
         </TableBody>
       </Table>
     );
-  }
+}
   

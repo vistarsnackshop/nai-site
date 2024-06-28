@@ -20,7 +20,7 @@ async function fetchData(username:string) {
   try {
     const db = await odbc.connect(connectionString);
     const custNum = await db.query('select CCUSTNUM from nai.USERS where USRPRF = ?', [username.toUpperCase()]);
-    const items = await db.query('select A.ITMID, A.ITEMDS, B.ITMCLSCD, B.PRMSUPID, B.PCKDS from nai.CCUSTITEM A join renuatdta.ICITEM B on A.ITMID = B.ITMID where STEREFDS = ? order by B.ITMID', [custNum[0].CCUSTNUM]);
+    const items = await db.query('select WHSID, WHSNMDS from nai.CCUSTWHS where STEREFDS = ? order by WHSID', [custNum[0].CCUSTNUM]);
     await db.close();
     return items;
   } catch (error) {

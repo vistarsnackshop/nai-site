@@ -2,15 +2,15 @@
 import React from "react";
 import {Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, getKeyValue, Spinner} from "@nextui-org/react";
 import {useAsyncList} from "@react-stately/data";
-import { Item, columns } from "../browseitems/column";
+import { Opco, columns } from "../browseopco/column";
 import { useSearchParams } from "next/navigation";
 
 
 
-export default function BrowseItems() {
+export default function BrowseOpco() {
     //get query to connect to this table without having to hardcode
     const fetchData = async (username: string) => {
-        let res = await fetch(`http://localhost:3000/api/browseItemData?username=${username}`,);
+        let res = await fetch(`http://localhost:3000/api/browseOpcoData?username=${username}`,);
         let json = await res.json();
         return json;
     };
@@ -20,7 +20,7 @@ export default function BrowseItems() {
 
     const [isLoading, setIsLoading] = React.useState(true);
   
-    let list = useAsyncList<Item>({
+    let list = useAsyncList<Opco>({
         async load() {
             let res = await fetchData(username as string);
             //let json = await res.json();
@@ -32,9 +32,9 @@ export default function BrowseItems() {
 
         async sort({items, sortDescriptor}) {
             return {
-                items: items.sort((a:Item, b:Item) => {
-                let first = a[sortDescriptor.column as keyof Item];
-                let second = b[sortDescriptor.column as keyof Item];
+                items: items.sort((a:Opco, b:Opco) => {
+                let first = a[sortDescriptor.column as keyof Opco];
+                let second = b[sortDescriptor.column as keyof Opco];
 
                 // Attempt to parse the values as floats
                 const firstNumber = parseFloat(first as string);
@@ -76,8 +76,8 @@ export default function BrowseItems() {
         }}
       >
         <TableHeader>
-          <TableColumn key="ITMID" allowsSorting>Item No.</TableColumn>
-          <TableColumn key="ITEMDS" allowsSorting>Item Description</TableColumn>
+          <TableColumn key="WHSID" allowsSorting>Operating Co. ID</TableColumn>
+          <TableColumn key="WHSNMDS" allowsSorting>Operating Co.</TableColumn>
         </TableHeader>
         <TableBody 
           items={list.items} 
@@ -85,7 +85,7 @@ export default function BrowseItems() {
           loadingContent={<Spinner label="Loading..." />}
         >
           {(item) => (
-            <TableRow key={item.ITMID}>
+            <TableRow key={item.WHSID}>
               {(columnKey) => <TableCell>{getKeyValue(item, columnKey)}</TableCell>}
             </TableRow>
           )}

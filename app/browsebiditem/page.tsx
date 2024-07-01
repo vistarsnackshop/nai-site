@@ -1,28 +1,32 @@
+//This is for the page that displays the list of bid items and their prices after browsing by bid
+
 'use client'
 import React from "react";
 import {Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, getKeyValue, Spinner} from "@nextui-org/react";
 import {useAsyncList} from "@react-stately/data";
-import { Bid, columns } from "../browsebids/column";
+import { Item } from "../browsebiditem/column";
 import { useSearchParams } from "next/navigation";
-import BidItemButton from "../buttoncomponents/bidItems";
 
 
-export default function BrowseBids() {
+
+export default function BrowseBidItem() {
     //get query to connect to this table without having to hardcode
-    const fetchData = async (username: string) => {
-        let res = await fetch(`http://localhost:3000/api/browseBidData?username=${username}`,);
+    const fetchData = async (username: string, bidId:string) => {
+        let res = await fetch(`http://localhost:3000/api/bidItemData?username=${username}&bidid=${bidId}`,);
         let json = await res.json();
         return json;
     };
 
     const searchParams = useSearchParams()!;
     const username = searchParams.get("username");
+    const bidId = searchParams.get("bidid");
+    console.log(bidId);
 
     const [isLoading, setIsLoading] = React.useState(true);
   
-    let list = useAsyncList<Bid>({
+    let list = useAsyncList<Item>({
         async load() {
-            let res = await fetchData(username as string);
+            let res = await fetchData(username as string, bidId as string);
             //let json = await res.json();
             setIsLoading(false);
             return {
@@ -32,9 +36,9 @@ export default function BrowseBids() {
 
         async sort({items, sortDescriptor}) {
             return {
-                items: items.sort((a:Bid, b:Bid) => {
-                let first = a[sortDescriptor.column as keyof Bid];
-                let second = b[sortDescriptor.column as keyof Bid];
+                items: items.sort((a:Item, b:Item) => {
+                let first = a[sortDescriptor.column as keyof Item];
+                let second = b[sortDescriptor.column as keyof Item];
 
                 // Attempt to parse the values as floats
                 const firstNumber = parseFloat(first as string);
@@ -65,7 +69,7 @@ export default function BrowseBids() {
             };
         },
     });
-
+  
     return (
       <Table
         aria-label="Example table with client side sorting"
@@ -76,11 +80,9 @@ export default function BrowseBids() {
         }}
       >
         <TableHeader>
-          <TableColumn key="WHSID" allowsSorting>Operating Co. ID</TableColumn>
-          <TableColumn key="WHSNMDS" allowsSorting>Operating Co.</TableColumn>
-          <TableColumn key="BDID" allowsSorting>Bid</TableColumn>
-          <TableColumn key="BDDESC">Bid Description</TableColumn>
-          <TableColumn key="Item">View Bid Items</TableColumn>
+          <TableColumn key="ITMID" allowsSorting>Item No.</TableColumn>
+          <TableColumn key="ITEMDS" allowsSorting>Item Description</TableColumn>
+          <TableColumn key="BDCUITAM" allowsSorting>Bid Price</TableColumn>
         </TableHeader>
         <TableBody 
           items={list.items} 
@@ -88,12 +90,14 @@ export default function BrowseBids() {
           loadingContent={<Spinner label="Loading..." />}
         >
           {(item) => (
-            <TableRow key={item.BDID}>
-              {(columnKey) => <TableCell>{columnKey === 'Item' ? (<BidItemButton username={username as string} bidId={item.BDID}>Items</BidItemButton>): (getKeyValue(item, columnKey))}</TableCell>}
+            <TableRow key={item.ITMID}>
+              {(columnKey) => <TableCell>{getKeyValue(item, columnKey)}</TableCell>}
             </TableRow>
           )}
         </TableBody>
       </Table>
     );
-}
+  }
+  
+
   

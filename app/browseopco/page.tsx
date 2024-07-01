@@ -1,9 +1,11 @@
+//this page is for after selecting browse by operating company
 'use client'
 import React from "react";
 import {Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, getKeyValue, Spinner} from "@nextui-org/react";
 import {useAsyncList} from "@react-stately/data";
 import { Opco, columns } from "../browseopco/column";
 import { useSearchParams } from "next/navigation";
+import OpcoItemButton from "../buttoncomponents/opcoBidItems";
 
 
 
@@ -78,6 +80,7 @@ export default function BrowseOpco() {
         <TableHeader>
           <TableColumn key="WHSID" allowsSorting>Operating Co. ID</TableColumn>
           <TableColumn key="WHSNMDS" allowsSorting>Operating Co.</TableColumn>
+          <TableColumn key="Item" allowsSorting>View Bid Items</TableColumn>
         </TableHeader>
         <TableBody 
           items={list.items} 
@@ -86,7 +89,7 @@ export default function BrowseOpco() {
         >
           {(item) => (
             <TableRow key={item.WHSID}>
-              {(columnKey) => <TableCell>{getKeyValue(item, columnKey)}</TableCell>}
+              {(columnKey) => <TableCell>{columnKey === 'Item' ? (<OpcoItemButton username={username as string} whsId={item.WHSID}>Items</OpcoItemButton>): (getKeyValue(item, columnKey))}</TableCell>}
             </TableRow>
           )}
         </TableBody>

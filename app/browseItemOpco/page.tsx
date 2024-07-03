@@ -6,6 +6,7 @@ import {Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, getKeyV
 import {useAsyncList} from "@react-stately/data";
 import { Opco, columns } from "../browseItemOpco/column";
 import { useSearchParams } from "next/navigation";
+import InventoryButton from "../buttoncomponents/inventoryButton";
 
 
 
@@ -81,6 +82,7 @@ export default function BrowseOpco() {
         <TableHeader>
           <TableColumn key="WHSID" allowsSorting>Operating Co. ID</TableColumn>
           <TableColumn key="WHSNMDS" allowsSorting>Operating Co.</TableColumn>
+          <TableColumn key="view">View Inventory</TableColumn>
         </TableHeader>
         <TableBody 
           items={list.items} 
@@ -89,7 +91,7 @@ export default function BrowseOpco() {
         >
           {(item) => (
             <TableRow key={item.WHSID}>
-              {(columnKey) => <TableCell>{getKeyValue(item, columnKey)}</TableCell>}
+              {(columnKey) => <TableCell>{columnKey === 'view' ? (<InventoryButton itemId={itemId as string} whsId={item.WHSID}>Inventory</InventoryButton>): (getKeyValue(item, columnKey))}</TableCell>}
             </TableRow>
           )}
         </TableBody>

@@ -1,4 +1,4 @@
-//this api is for fetching the data for the inventory stats grid(On hand, On order, 4 week avg)
+//Api/Fetching data for the operating companies page after browsing by item 
 
 import { NextApiRequest, NextApiResponse } from "next";
 import { NextRequest } from "next/server";
@@ -16,13 +16,14 @@ const odbc = require('odbc');
 
 const connectionString = 'DSN=B4799;UID=VSAUSER;PWD=VSAUSER';
 
-async function fetchData(itemId:string, whsId:string) {
+async function fetchData(username:string) {
   //const searchParams = useSearchParams()!;
   try {
     const db = await odbc.connect(connectionString);
-    const inventoryData = await db.query("select DSPOHQT, DPONORQT, DPAVDMQT from renuatdta.ICWHBA where WHSID = ? and ITMID = ?", [whsId, itemId]);
+    const custNum = await db.query('select CCUSTNUM from nai.USERS where USRPRF = ?', [username.toUpperCase()]);
+    const headerInfo = await db.query("select SPNMDS, STEREFDS from renuatdta.CMNATL where STEREFDS = ?", [custNum[0].CCUSTNUM]);
     await db.close();
-    return inventoryData;
+    return headerInfo;
   } catch (error) {
     console.error('Error fetching data:', error);
     return [];
@@ -31,11 +32,9 @@ async function fetchData(itemId:string, whsId:string) {
 
 export async function GET(request:NextRequest) {
   const params = getParamsObject(request);
-  const itemId = params.itemId;
-  const whsId = params.whsId;
-
+  const username = params.username;
     try {
-      const data = await fetchData(itemId, whsId);
+      const data = await fetchData(username);
       return new Response(JSON.stringify(data), {
         status: 200,
         headers: {

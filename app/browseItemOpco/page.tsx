@@ -10,7 +10,7 @@ import InventoryButton from "../buttoncomponents/inventoryButton";
 
 
 
-export default function BrowseOpco() {
+export default function BrowseItemOpco() {
     //get query to connect to this table without having to hardcode
     const fetchData = async (username: string, itemId:string) => {
         let res = await fetch(`http://localhost:3000/api/itmOpcoData?username=${username}&itemId=${itemId}`,);
@@ -71,31 +71,33 @@ export default function BrowseOpco() {
     });
   
     return (
-      <Table
-        aria-label="Example table with client side sorting"
-        sortDescriptor={list.sortDescriptor}
-        onSortChange={list.sort}
-        classNames={{
-          table: "min-h-[400px]",
-        }}
-      >
-        <TableHeader>
-          <TableColumn key="WHSID" allowsSorting>Operating Co. ID</TableColumn>
-          <TableColumn key="WHSNMDS" allowsSorting>Operating Co.</TableColumn>
-          <TableColumn key="view">View Inventory</TableColumn>
-        </TableHeader>
-        <TableBody 
-          items={list.items} 
-          isLoading={isLoading}
-          loadingContent={<Spinner label="Loading..." />}
+      <div className="w-2/3 mx-auto">
+        <Table
+          aria-label="Example table with client side sorting"
+          sortDescriptor={list.sortDescriptor}
+          onSortChange={list.sort}
+          classNames={{
+            table: "min-h-[400px]",
+          }}
         >
-          {(item) => (
-            <TableRow key={item.WHSID}>
-              {(columnKey) => <TableCell>{columnKey === 'view' ? (<InventoryButton itemId={itemId as string} whsId={item.WHSID}>Inventory</InventoryButton>): (getKeyValue(item, columnKey))}</TableCell>}
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+          <TableHeader>
+            <TableColumn key="WHSID" allowsSorting>Operating Co. ID</TableColumn>
+            <TableColumn key="WHSNMDS" allowsSorting>Operating Co.</TableColumn>
+            <TableColumn key="view" className="text-center w-96">View Inventory</TableColumn>
+          </TableHeader>
+          <TableBody 
+            items={list.items} 
+            isLoading={isLoading}
+            loadingContent={<Spinner label="Loading..." />}
+          >
+            {(item) => (
+              <TableRow key={item.WHSID} className="h-4">
+                {(columnKey) => <TableCell className="p-2">{columnKey === 'view' ? (<div className="flex items-center justify-center"><InventoryButton itemId={itemId as string} whsId={item.WHSID}>Inventory</InventoryButton></div>): (getKeyValue(item, columnKey))}</TableCell>}
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
     );
   }
   

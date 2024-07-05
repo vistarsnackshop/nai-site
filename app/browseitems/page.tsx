@@ -8,6 +8,7 @@ import { useSearchParams } from "next/navigation";
 import ItemOpcoButton from "../buttoncomponents/stockingOpco";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import Header from "../header/header";
+import Breadcrumbs from "../header/breadcrumb";
 
 export default function BrowseItems() {
   // Function to fetch data based on username
@@ -19,6 +20,11 @@ export default function BrowseItems() {
 
   const searchParams = useSearchParams()!;
   const username = searchParams.get("username");
+
+  const breadcrumbs = [
+    { name: "Home", href: `/browsepage?username=${username}`},
+    { name: "Browse By Item", href: "/browseitems" },
+  ];
 
   // State for managing search query and filtered items
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -87,8 +93,11 @@ export default function BrowseItems() {
 
   return (
     <div>
-      <div className="mb-5">
-        <Header customerNumber="80020" customerName="Round Table"/>
+      <div className="mb-5 flex justify-center">
+        <Header username={username as string}/>
+      </div>
+      <div className="my-5 w-2/3 mx-auto">
+        <Breadcrumbs breadcrumbs={breadcrumbs}/>
       </div>
       <div className="w-2/3 mx-auto">
         {/* Search bar with magnifying glass icon */}
@@ -96,7 +105,7 @@ export default function BrowseItems() {
           <input
             type="text"
             className="border border-gray-300 rounded-md py-2 px-4 w-1/3 pl-10"
-            placeholder="Search by item description"
+            placeholder="Search By Item Description..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />

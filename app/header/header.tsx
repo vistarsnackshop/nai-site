@@ -49,7 +49,7 @@ const Header: React.FC<HeaderProps> = ({ username }) => {
         </button>
       </div>
       <div className="text-gray-700 flex justify-center items-center">
-        <p className='text-3xl font-extrabold'>Serving customer {customerNames}, {customerNumbers}</p>
+        <p className='text-3xl font-extrabold'>Now Serving Customer {customerNames}, {customerNumbers}</p>
       </div>
     </header>
   );

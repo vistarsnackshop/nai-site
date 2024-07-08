@@ -14,19 +14,30 @@ function PoCard() {
     const whsId = searchParams.get("whsId");
 
     const [purchaseOrders, setPurchaseOrders] = useState<PurchaseOrder[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
     useEffect(() => {
         const fetchPOData = async () => {
+            setLoading(true);
             try {
                 const response = await fetch(`http://localhost:3000/api/purchaseOrderData?itemId=${itemId}&whsId=${whsId}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
                 const data = await response.json();
                 setPurchaseOrders(data);
             } catch (error) {
                 console.error("Error fetching purchase order data:", error);
+                setError("Failed to fetch purchase orders");
+            } finally {
+                setLoading(false);
             }
         };
 
-        fetchPOData();
+        if (itemId && whsId) {
+            fetchPOData();
+        }
     }, [itemId, whsId]);
 
     // Helper function to format the date
@@ -36,6 +47,14 @@ function PoCard() {
         const day = dateString.substring(6, 8);
         return `${month}/${day}/${year}`;
     };
+
+    if (loading) {
+        return <p>Loading...</p>; // Placeholder for loading indicator
+    }
+
+    if (error) {
+        return <p>{error}</p>; // Display error message if fetching fails
+    }
 
     return (
         <div className="flex flex-col">

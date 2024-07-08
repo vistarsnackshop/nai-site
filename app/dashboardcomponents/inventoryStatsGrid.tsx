@@ -9,6 +9,7 @@ function InventoryStatsGrid() {
 
     const [inventory, setInventory] = useState([]);
     const [currentWeek, setCurrentWeek] = useState([]);
+    const [isLoading, setIsLoading] = useState(true); // State to track loading status
 
     useEffect(() => {
         const fetchStatsGridData = async () => {
@@ -18,6 +19,8 @@ function InventoryStatsGrid() {
                 setInventory(data);
             } catch (error) {
                 console.error("Error fetching statsGridData:", error);
+            } finally {
+                setIsLoading(false); // Set loading to false once data is fetched
             }
         };
 
@@ -48,7 +51,11 @@ function InventoryStatsGrid() {
                 <div className="pl-4">
                     <span className="text-md text-gray-500 font-light">Quantity On Hand</span>
                     <div className="flex items-center">
-                        <strong className="text-xl text-gray-700 font-semibold">{inventory.map((list, index) => (<p key={index}>{list['DSPOHQT']}</p>))}</strong>
+                        {isLoading ? (
+                            <div className="animate-pulse h-8 w-32 bg-gray-200 rounded"></div>
+                        ) : (
+                            <strong className="text-xl text-gray-700 font-semibold">{inventory.map((list, index) => (<p key={index}>{list['DSPOHQT']}</p>))}</strong>
+                        )}
                     </div>
                 </div>
             </div>
@@ -61,7 +68,11 @@ function InventoryStatsGrid() {
                 <div className="pl-4">
                     <span className="text-md text-gray-500 font-light">Quantity On Order</span>
                     <div className="flex items-center">
-                        <strong className="text-xl text-gray-700 font-semibold">{inventory.map((list, index) => (<p key={index}>{list['DPONORQT']}</p>))}</strong>
+                        {isLoading ? (
+                            <div className="animate-pulse h-8 w-32 bg-gray-200 rounded"></div>
+                        ) : (
+                            <strong className="text-xl text-gray-700 font-semibold">{inventory.map((list, index) => (<p key={index}>{list['DPONORQT']}</p>))}</strong>
+                        )}
                     </div>
                 </div>
             </div>
@@ -74,7 +85,11 @@ function InventoryStatsGrid() {
                 <div className="pl-4">
                     <span className="text-md text-gray-500 font-light">Prior 4 Week Avg. Sales</span>
                     <div className="flex items-center">
-                        <strong className="text-xl text-gray-700 font-semibold">{inventory.map((list, index) => (<p key={index}>{list['DPAVDMQT']}</p>))}</strong>
+                        {isLoading ? (
+                            <div className="animate-pulse h-8 w-32 bg-gray-200 rounded"></div>
+                        ) : (
+                            <strong className="text-xl text-gray-700 font-semibold">{inventory.map((list, index) => (<p key={index}>{list['DPAVDMQT']}</p>))}</strong>
+                        )}
                     </div>
                 </div>
             </div>
@@ -87,7 +102,11 @@ function InventoryStatsGrid() {
                 <div className="pl-4">
                     <span className="text-md text-gray-500 font-light">Current Week Sales</span>
                     <div className="flex items-center">
-                        <strong className="text-xl text-gray-700 font-semibold">{currentWeek.length > 0 && <p>{currentWeek[0]['ORDBSQT']}</p>}</strong>
+                        {isLoading ? (
+                            <div className="animate-pulse h-8 w-32 bg-gray-200 rounded"></div>
+                        ) : (
+                            <strong className="text-xl text-gray-700 font-semibold">{currentWeek.length > 0 && <p>{currentWeek[0]['ORDBSQT']}</p>}</strong>
+                        )}
                     </div>
                 </div>
             </div>

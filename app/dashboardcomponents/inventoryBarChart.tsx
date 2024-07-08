@@ -7,7 +7,7 @@ interface Inventory {
     FSCLWKNB: number;
     ORDBSQT: number;
     name: string;
-    value: number;
+    Quantity: number;
 }
 
 // Fetch data from the API
@@ -32,7 +32,7 @@ function prepData(apiData: any[]): Inventory[] {
             FSCLWKNB: item.FSCLWKNB,
             ORDBSQT: item.ORDBSQT,
             name: weekMapping[item.FSCLWKNB] !== undefined ? `Week ${weekMapping[item.FSCLWKNB]}` : `Week ${item.FSCLWKNB}`,
-            value: item.ORDBSQT,
+            Quantity: item.ORDBSQT,
         }));
 }
 
@@ -80,7 +80,7 @@ const InventoryChart: React.FC = () => {
                         <YAxis />
                         <Tooltip content={<CustomTooltip />} />
                         <Legend />
-                        <Bar dataKey="value" fill="#8884d8" />
+                        <Bar dataKey="Quantity" fill="#8884d8" />
                     </BarChart>
                 </ResponsiveContainer>
             </div>

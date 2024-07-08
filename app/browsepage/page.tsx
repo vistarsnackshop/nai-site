@@ -3,6 +3,7 @@ import { useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import Footer from "../footer/page";
 import Link from "next/link";
+import Header from "../header/header";
 
 export default function browsePage() {
   const searchParams = useSearchParams()!;

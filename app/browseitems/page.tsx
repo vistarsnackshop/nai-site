@@ -23,7 +23,7 @@ export default function BrowseItems() {
 
   const breadcrumbs = [
     { name: "Home", href: `/browsepage?username=${username}`},
-    { name: "Browse By Item", href: "/browseitems" },
+    { name: "All Bid Items", href: "/browseitems" },
   ];
 
   // State for managing search query and filtered items
@@ -116,6 +116,7 @@ export default function BrowseItems() {
 
         {/* Table component */}
         <Table
+          isStriped
           aria-label="Example table with client side sorting"
           sortDescriptor={list.sortDescriptor}
           onSortChange={list.sort}
@@ -148,6 +149,7 @@ export default function BrowseItems() {
                         <ItemOpcoButton
                           username={username as string}
                           itemId={item.ITMID}
+                          itemDS={item.ITEMDS}
                         >
                           Operating Company
                         </ItemOpcoButton>

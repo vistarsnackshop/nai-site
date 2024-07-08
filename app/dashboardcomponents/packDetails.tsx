@@ -7,21 +7,37 @@ function PackDetails() {
     const itemId = searchParams.get("itemId");
 
     const [inventory, setInventory] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
     useEffect(() => {
         const fetchPackData = async () => {
             try {
                 const response = await fetch(`http://localhost:3000/api/packData?itemId=${itemId}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
                 const data = await response.json();
                 setInventory(data);
             } catch (error) {
-                console.error("Error fetching statsGridData:", error);
+                setError("Failed to fetch data");
+            } finally {
+                setLoading(false);
             }
         };
 
-        fetchPackData();
+        if (itemId) {
+            fetchPackData();
+        }
     }, [itemId]);
 
+    if (loading) {
+        return <p>Loading...</p>; // Placeholder for loading indicator
+    }
+
+    if (error) {
+        return <p>{error}</p>; // Display error message if fetching fails
+    }
 
     return (
         <div className="flex gap-4">

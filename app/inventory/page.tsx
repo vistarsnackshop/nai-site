@@ -10,12 +10,27 @@ import Breadcrumbs from "../header/breadcrumb";
 export default function InventoryPage(){
     const searchParams = useSearchParams()!;
     const username = searchParams.get("username");
+    const itemId = searchParams.get("itemId");
+    const itemDescription = localStorage.getItem("ItemDescription");
+
+    const breadcrumbs = [
+        { name: "Home", href: `/browsepage?username=${username}`},
+        { name: "All Bid Items", href: `/browseitems?username=${username}` },
+        { name: "Stocking Operating Companies", href: `/browseItemOpco?username=${username}&itemId=${itemId}`},
+        { name: "Inventory", href: `/inventory?username=${username}&itemId=${itemId}`}
+    ];
 
     return (
         <>
         <div>
             <div className="mb-5 flex justify-center">
             <Header username={username as string}/>
+            </div>
+            <div className="text-gray-700 text-2xl font-extrabold mb-5 flex justify-center">
+                <p>Viewing Inventory For: {itemDescription}</p>
+            </div>
+            <div className="my-5 w-5/6 mx-auto">
+                <Breadcrumbs breadcrumbs={breadcrumbs}/>
             </div>
             <div className="flex flex-col gap-4">
                 <div>

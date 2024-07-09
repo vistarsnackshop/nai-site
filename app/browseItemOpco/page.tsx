@@ -33,7 +33,7 @@ export default function BrowseItemOpco() {
     const [isLoading, setIsLoading] = React.useState(true);
     const [selectedItemDescription, setSelectedItemDescription] = useState<string | null>(null);
 
-   // Retrieve ITEMDS from local storage on client side
+    // Retrieve ITEMDS from local storage on client side
     useEffect(() => {
       if (typeof window !== 'undefined') {
         const itemDescription = localStorage.getItem("ItemDescription");
@@ -96,7 +96,7 @@ export default function BrowseItemOpco() {
           <p>Operating Companies Stocking: {selectedItemDescription}</p>
         </div>
         <div className="my-5 w-2/3 mx-auto">
-        <Breadcrumbs breadcrumbs={breadcrumbs}/>
+          <Breadcrumbs breadcrumbs={breadcrumbs}/>
         </div>
         <div className="w-2/3 mx-auto">
           <Table
@@ -117,7 +117,7 @@ export default function BrowseItemOpco() {
             >
               {(item) => (
                 <TableRow key={item.WHSID} >
-                  {(columnKey) => <TableCell >{columnKey === 'view' ? (<div className="flex items-center justify-center"><InventoryButton username={username as string} itemId={itemId as string} whsId={item.WHSID}>Inventory</InventoryButton></div>): (getKeyValue(item, columnKey))}</TableCell>}
+                  {(columnKey) => <TableCell>{columnKey === 'view' ? (<div className="flex items-center justify-center"><InventoryButton username={username as string} itemId={itemId as string} whsId={item.WHSID}>Inventory</InventoryButton></div>): (getKeyValue(item, columnKey))}</TableCell>}
                 </TableRow>
               )}
             </TableBody>

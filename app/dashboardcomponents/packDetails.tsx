@@ -42,8 +42,11 @@ function PackDetails() {
     return (
         <div className="flex gap-4">
             <div className="bg-white rounded-sm p-4 flex-1 border border-gray-200 flex items-center">
-                <div className="rounded-full h-12 w-12 flex items-center justify-center bg-teal-500">
-                    <FaDolly className="text-2xl text-white" />
+                <div className="flex flex-col items-center">
+                    <div className="rounded-full h-12 w-12 flex items-center justify-center bg-teal-500">
+                        <FaDolly className="text-2xl text-white" />
+                    </div>
+                    <span className="text-md text-gray-500 font-light mt-2">Item Details</span>
                 </div>
                 <div className="pl-4">
                     <span className="text-md text-gray-500 font-light">Unit Of Measure</span>

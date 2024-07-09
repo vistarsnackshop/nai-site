@@ -6,19 +6,26 @@ import {useAsyncList} from "@react-stately/data";
 import { Opco, columns } from "../browseopco/column";
 import { useSearchParams } from "next/navigation";
 import OpcoItemButton from "../buttoncomponents/opcoBidItems";
+import Header from "../header/header";
+import Breadcrumbs from "../header/breadcrumb";
 
 
 
 export default function BrowseOpco() {
     //get query to connect to this table without having to hardcode
     const fetchData = async (username: string) => {
-        let res = await fetch(`http://localhost:3000/api/browseOpcoData?username=${username}`,);
-        let json = await res.json();
-        return json;
+      let res = await fetch(`http://localhost:3000/api/browseOpcoData?username=${username}`,);
+      let json = await res.json();
+      return json;
     };
 
     const searchParams = useSearchParams()!;
     const username = searchParams.get("username");
+
+    const breadcrumbs = [
+      { name: "Home", href: `/browsepage?username=${username}`},
+      { name: "All Operating Companies", href: "/browseopco" },
+    ];
 
     const [isLoading, setIsLoading] = React.useState(true);
   
@@ -69,31 +76,42 @@ export default function BrowseOpco() {
     });
   
     return (
-      <Table
-        aria-label="Example table with client side sorting"
-        sortDescriptor={list.sortDescriptor}
-        onSortChange={list.sort}
-        classNames={{
-          table: "min-h-[400px]",
-        }}
-      >
-        <TableHeader>
-          <TableColumn key="WHSID" allowsSorting>Operating Co. ID</TableColumn>
-          <TableColumn key="WHSNMDS" allowsSorting>Operating Co.</TableColumn>
-          <TableColumn key="Item" allowsSorting>View Bid Items</TableColumn>
-        </TableHeader>
-        <TableBody 
-          items={list.items} 
-          isLoading={isLoading}
-          loadingContent={<Spinner label="Loading..." />}
-        >
-          {(item) => (
-            <TableRow key={item.WHSID}>
-              {(columnKey) => <TableCell>{columnKey === 'Item' ? (<OpcoItemButton username={username as string} whsId={item.WHSID}>Items</OpcoItemButton>): (getKeyValue(item, columnKey))}</TableCell>}
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-    );
-  }
+      <div>
+        <div className="mb-5 flex justify-center">
+          <Header username={username as string}/>
+        </div>
+        <div className="my-5 w-2/3 mx-auto">
+          <Breadcrumbs breadcrumbs={breadcrumbs}/>
+        </div>
+        <div className="w-2/3 mx-auto">
+          <Table
+            isStriped
+            aria-label="Example table with client side sorting"
+            sortDescriptor={list.sortDescriptor}
+            onSortChange={list.sort}
+            classNames={{
+              table: "min-h-[400px]",
+            }}
+          >
+            <TableHeader>
+              <TableColumn key="WHSID" allowsSorting>Operating Co. ID</TableColumn>
+              <TableColumn key="WHSNMDS" allowsSorting>Operating Co.</TableColumn>
+              <TableColumn key="Item" className="text-center w-96">View Bid Items</TableColumn>
+            </TableHeader>
+            <TableBody 
+              items={list.items} 
+              isLoading={isLoading}
+              loadingContent={<Spinner label="Loading..." />}
+            >
+              {(item) => (
+                <TableRow key={item.WHSID}>
+                  {(columnKey) => <TableCell>{columnKey === 'Item' ? (<div className="flex items-center justify-center"><OpcoItemButton username={username as string} whsId={item.WHSID} whsDS={item.WHSNMDS}>Items</OpcoItemButton></div>): (getKeyValue(item, columnKey))}</TableCell>}
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
+      </div>
+  );
+}
   

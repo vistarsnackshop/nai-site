@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaSignOutAlt } from 'react-icons/fa';
+import Link from 'next/link'
 
 // Define the interface for the props
 interface HeaderProps {
@@ -37,7 +38,7 @@ const Header: React.FC<HeaderProps> = ({ username }) => {
     <header className="w-5/6 bg-white text-vistarGreen p-4">
       <div className="flex justify-between items-center mb-2">
         <div className="flex items-center">
-          <img src="vistar-logo.png" alt="Logo" className="h-10" />
+          <Link href={`./browsepage?username=${username}`}><img src="vistar-logo.png" alt="Logo" className="h-10"/></Link>
           <span className="ml-2 text-lg font-bold text-vistarGreen">NAI</span>
         </div>
         <button 

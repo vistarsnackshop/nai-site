@@ -8,6 +8,8 @@ import { useCallback } from "react";
 
 const InputForm = () => {
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
 
   const createQueryString = useCallback(
     (name: string, value:string) => {
@@ -19,8 +21,6 @@ const InputForm = () => {
     []
   );
 
-  const [showPassword, setShowPassword] = useState(false);
-
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -29,15 +29,23 @@ const InputForm = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const response = await signIn('credentials', {
-      username: formData.get('username'),
-      password: formData.get('password'),
-      redirect: false, 
-    });
+    
+    try {
+      const response = await signIn("credentials", {
+        username: formData.get("username") as string,
+        password: formData.get("password") as string,
+        redirect: false,
+      });
 
-    if (!response?.error) {
-      router.push(`/browsepage?${createQueryString("username", formData.get('username') as string)}`);
-      router.refresh();
+      if (response?.error) {
+        setError("Invalid username or password"); // Set generic error message
+      } else {
+        const username = formData.get("username") as string;
+        router.push(`/browsepage?${createQueryString("username", username)}`);
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      setError("Invalid username or password"); // Generic error message for unexpected errors
     }
   };
 
@@ -46,6 +54,7 @@ const InputForm = () => {
       <div className="mb-12">
         <h3 className="text-3xl font-extrabold">Sign in</h3>
       </div>
+      {error && <p className="text-red-500 mb-4">{error}</p>}
       <div>
         <label className="text-xs block mb-2">Username</label>
         <div className="relative flex items-center">

@@ -1,10 +1,11 @@
 //Import necessary modules and components
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { body, validationResult } from "express-validator"
 const odbc = require("odbc");
 
 // Define the connection string for the ODBC connection
-const connectionString = "DSN=B4799;UID=VSAUSER;PWD=VSAUSER";
+const connectionString = process.env.CONNECTION_STRING;
 
 // Define NextAuth handler function
 const handler = NextAuth({
@@ -20,7 +21,19 @@ const handler = NextAuth({
         password: {}, // Define structure for password credential
       },
       // Authorization function for credentials provider
-      async authorize(credentials, req) {
+      async authorize(credentials?, req?) {
+        // Sanitize and validate input
+        const validationErrors = [];
+        if (!credentials?.username || typeof credentials?.username !== 'string' || !credentials?.username.match(/^[a-zA-Z0-9]+$/)){
+          validationErrors.push({ message: "Invalid username format" });
+        }
+        if (!credentials?.password || typeof credentials?.password !== 'string' || credentials?.password.length < 6) {
+          validationErrors.push({ message: "Password must be at least 6 characters long" });
+        }
+        if (validationErrors.length > 0) {
+          throw new Error(JSON.stringify(validationErrors));
+        }
+
         // Establish connection to ODBC database
         const connection = await odbc.connect(connectionString);
 

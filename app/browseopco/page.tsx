@@ -14,7 +14,7 @@ import Breadcrumbs from "../header/breadcrumb";
 export default function BrowseOpco() {
     //get query to connect to this table without having to hardcode
     const fetchData = async (username: string) => {
-      let res = await fetch(`http://localhost:3000/api/browseOpcoData?username=${username}`,);
+      let res = await fetch(`http://localhost:3000/api/browseOpcoData?username=${username}`);
       let json = await res.json();
       return json;
     };

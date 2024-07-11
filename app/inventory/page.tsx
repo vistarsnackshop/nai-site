@@ -7,18 +7,46 @@ import PoCard from "../dashboardcomponents/poCard";
 import Header from "../header/header";
 import Breadcrumbs from "../header/breadcrumb";
 
+type Breadcrumb = {
+    name: string;
+    href: string;
+  };
+
 export default function InventoryPage(){
     const searchParams = useSearchParams()!;
     const username = searchParams.get("username");
     const itemId = searchParams.get("itemId");
     const itemDescription = localStorage.getItem("ItemDescription");
 
-    const breadcrumbs = [
-        { name: "Home", href: `/browsepage?username=${username}`},
-        { name: "All Bid Items", href: `/browseitems?username=${username}` },
-        { name: "Stocking Operating Companies", href: `/browseItemOpco?username=${username}&itemId=${itemId}`},
-        { name: "Inventory", href: `/inventory?username=${username}&itemId=${itemId}`}
-    ];
+    const getPreviousPage = () => {
+        const referer = document.referrer;
+        if(referer.includes("/browseItemOpco")){
+            return [
+                { name: "Home", href: `/browsepage?username=${username}`},
+                { name: "All Bid Items", href: `/browseitems?username=${username}` },
+                { name: "Stocking Operating Companies", href: `/browseItemOpco?username=${username}&itemId=${itemId}`},
+                { name: "Inventory", href: `/inventory?username=${username}&itemId=${itemId}`}
+            ] as Breadcrumb[];
+        } else if(referer.includes("/browsebiditem")){
+            return [
+                { name: "Home", href: `/browsepage?username=${username}`},
+                { name: "View Bids", href: `/browsebids?username=${username}` },
+                { name: "Bid Items", href: `/browsebiditem?username=${username}&itemId=${itemId}`},
+                { name: "Inventory", href: `/inventory?username=${username}&itemId=${itemId}`}
+            ] as Breadcrumb[];
+        } else if(referer.includes("/browsebiditem")){
+            return [
+                { name: "Home", href: `/browsepage?username=${username}`},
+                { name: "All Operating Companies", href: `/browseopco?username=${username}` },
+                { name: "All Bid Items", href: `/browseopcoitem?username=${username}&itemId=${itemId}`},
+                { name: "Inventory", href: `/inventory?username=${username}&itemId=${itemId}`}
+            ] as Breadcrumb[];
+        } else {
+            return[];
+        }
+    };
+
+    const breadcrumbs = getPreviousPage();
 
     return (
         <>

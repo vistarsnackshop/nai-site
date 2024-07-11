@@ -13,14 +13,17 @@ const getParamsObject = (request: NextRequest): { [key: string]: string } => {
 
 const odbc = require('odbc');
 
-const connectionString = 'DSN=B4799;UID=VSAUSER;PWD=VSAUSER';
+const connectionString = process.env.CONNECTION_STRING;
 
 async function fetchData(username:string) {
-  //const searchParams = useSearchParams()!;
+  const ccnumQuery = 'select CCUSTNUM from nai.USERS where USRPRF = ?';
+  const ccnumParams = [username.toUpperCase()];
+  const itemsQuery = 'select WHSID, WHSNMDS from nai.CCUSTWHS where STEREFDS = ? order by WHSID';
+
   try {
     const db = await odbc.connect(connectionString);
-    const custNum = await db.query('select CCUSTNUM from nai.USERS where USRPRF = ?', [username.toUpperCase()]);
-    const items = await db.query('select WHSID, WHSNMDS from nai.CCUSTWHS where STEREFDS = ? order by WHSID', [custNum[0].CCUSTNUM]);
+    const custNum = await db.query(ccnumQuery, ccnumParams);
+    const items = await db.query(itemsQuery, [custNum[0].CCUSTNUM]);
     await db.close();
     return items;
   } catch (error) {

@@ -14,14 +14,16 @@ const getParamsObject = (request: NextRequest): { [key: string]: string } => {
 
 const odbc = require('odbc');
 
-const connectionString = 'DSN=B4799;UID=VSAUSER;PWD=VSAUSER';
+const connectionString = process.env.CONNECTION_STRING;
 
 async function fetchData(username:string, itemId:string) {
-  //const searchParams = useSearchParams()!;
+  const ccnumQuery = 'select CCUSTNUM from nai.USERS where USRPRF = ?';
+  const ccnumParams = [username.toUpperCase()];
+  const itemsQuery = "select A.WHSID, B.WHSNMDS from renuatdta.ICWHIM A join renuatdta.ICWHSE B on A.WHSID=B.WHSID join nai.CCUSTWHS C on A.WHSID=C.WHSID where A.ITMID = ? and A.WHISTSCD <> 'I' and C.STEREFDS = ?"
   try {
     const db = await odbc.connect(connectionString);
-    const custNum = await db.query('select CCUSTNUM from nai.USERS where USRPRF = ?', [username.toUpperCase()]);
-    const items = await db.query("select A.WHSID, B.WHSNMDS from renuatdta.ICWHIM A join renuatdta.ICWHSE B on A.WHSID=B.WHSID join nai.CCUSTWHS C on A.WHSID=C.WHSID where A.ITMID=? and A.WHISTSCD <> 'I' and C.STEREFDS=?", [itemId, custNum[0].CCUSTNUM]);
+    const custNum = await db.query(ccnumQuery, ccnumParams);
+    const items = await db.query(itemsQuery, [itemId, custNum[0].CCUSTNUM]);
     await db.close();
     return items;
   } catch (error) {

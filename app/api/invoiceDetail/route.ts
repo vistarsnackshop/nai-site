@@ -1,9 +1,7 @@
-//Api/Fetching data for the operating companies page after browsing by item 
 
 import { NextApiRequest, NextApiResponse } from "next";
 import { NextRequest } from "next/server";
 import { useSearchParams } from "next/navigation";
-import { header } from "express-validator";
 
 const getParamsObject = (request: NextRequest): { [key: string]: string } => {
   const params: { [key: string]: string } = {};
@@ -17,16 +15,14 @@ const odbc = require('odbc');
 
 const connectionString = process.env.CONNECTION_STRING;
 
-async function fetchData(username:string) {
-  const ccnumQuery = 'select CCUSTNUM from nai.USERS where USRPRF = ?';
-  const ccnumParams = [username.toUpperCase()]
-  const headerInfoQuery = 'select SPNMDS, STEREFDS from renuatdta.CMNATL where STEREFDS = ?';
+async function fetchData(invoice:string) {
+  const invoiceItemsQuery = "select BLLINNB, cast(BLORQT as integer), cast(BLSPOUQT as integer), ITMID, BLORIMDS, cast(case BLIVTPCD when 'CRD' then BLUPPUAM * -1 else BLUPPUAM end as numeric(7, 2)), case BLIVTPCD when 'CRD' then BLETPRAM * -1 else BLETPRAM end, case RESALEFL when 'N' then 'Y' else ' ' end from renuatdta.BLIVLN where BLID = ? and BLLNSTCD = 'BLD'";
+
   try {
     const db = await odbc.connect(connectionString);
-    const custNum = await db.query(ccnumQuery, ccnumParams);
-    const headerInfo = await db.query(headerInfoQuery, [custNum[0].CCUSTNUM]);
+    const invoiceItems = await db.query(invoiceItemsQuery, [invoice]);
     await db.close();
-    return headerInfo;
+    return invoiceItems;
   } catch (error) {
     console.error('Error fetching data:', error);
     return [];
@@ -35,9 +31,10 @@ async function fetchData(username:string) {
 
 export async function GET(request:NextRequest) {
   const params = getParamsObject(request);
-  const username = params.username;
+  const invoice = params.invoice;
+
     try {
-      const data = await fetchData(username);
+      const data = await fetchData(invoice);
       return new Response(JSON.stringify(data), {
         status: 200,
         headers: {

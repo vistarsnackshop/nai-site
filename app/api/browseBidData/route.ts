@@ -20,14 +20,16 @@ const getParamsObject = (request: NextRequest): { [key: string]: string } => {
 
 const odbc = require('odbc');
 
-const connectionString = 'DSN=B4799;UID=VSAUSER;PWD=VSAUSER';
+const connectionString = process.env.CONNECTION_STRING;
 
 async function fetchData(username:string) {
-  //const searchParams = useSearchParams()!;
+  const ccnumQuery = 'select CCUSTNUM from nai.USERS where USRPRF = ?';
+  const ccnumParams = [username.toUpperCase()];
+  const bidsQuery = 'select distinct D.WHSID, D.WHSNMDS, C.BDID, C.BDDESC, A.STEREFDS from renuatdta.CMSHIP A join renuatdta.PCSHBD B on A.CTMSHIID = B.CTMSHIID join renuatdta.PCBDHD C on B.BDID = C.BDID and C.BDEFFTDT <= ? and C.BDEXPDT > ? join renuatdta.ICWHSE D on C.BDWHSID = D.WHSID where A.STEREFDS = ? order by D.WHSID, C.BDID';
   try {
     const db = await odbc.connect(connectionString);
-    const custNum = await db.query('select CCUSTNUM from nai.USERS where USRPRF = ?', [username.toUpperCase()]);
-    const bids = await db.query('select distinct D.WHSID, D.WHSNMDS, C.BDID, C.BDDESC, A.STEREFDS from renuatdta.CMSHIP A join renuatdta.PCSHBD B on A.CTMSHIID = B.CTMSHIID join renuatdta.PCBDHD C on B.BDID = C.BDID and C.BDEFFTDT <= ? and C.BDEXPDT > ? join renuatdta.ICWHSE D on C.BDWHSID = D.WHSID where A.STEREFDS = ? order by D.WHSID, C.BDID',[dateAsInteger.toString(), dateAsInteger.toString(), custNum[0].CCUSTNUM]);
+    const custNum = await db.query(ccnumQuery, ccnumParams);
+    const bids = await db.query(bidsQuery,[dateAsInteger.toString(), dateAsInteger.toString(), custNum[0].CCUSTNUM]);
     await db.close();
     return bids;
   } catch (error) {

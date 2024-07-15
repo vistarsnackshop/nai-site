@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react"; 
 
 // Define the Inventory interface
 interface Inventory {

@@ -8,6 +8,7 @@ import { useSearchParams } from "next/navigation";
 import OpcoItemButton from "../buttoncomponents/opcoBidItems";
 import Header from "../header/header";
 import Breadcrumbs from "../header/breadcrumb";
+import { useSession } from "next-auth/react"; 
 
 
 
@@ -19,8 +20,8 @@ export default function BrowseOpco() {
       return json;
     };
 
-    const searchParams = useSearchParams()!;
-    const username = searchParams.get("username");
+    const { data: session } = useSession();
+    const username = session?.user?.name;
 
     const breadcrumbs = [
       { name: "Home", href: `/browsepage?username=${username}`},
@@ -78,7 +79,7 @@ export default function BrowseOpco() {
     return (
       <div>
         <div className="mb-5 flex justify-center">
-          <Header username={username as string}/>
+          <Header/>
         </div>
         <div className="my-5 w-2/3 mx-auto">
           <Breadcrumbs breadcrumbs={breadcrumbs}/>
@@ -105,7 +106,7 @@ export default function BrowseOpco() {
             >
               {(item) => (
                 <TableRow key={item.WHSID}>
-                  {(columnKey) => <TableCell>{columnKey === 'Item' ? (<div className="flex items-center justify-center"><OpcoItemButton username={username as string} whsId={item.WHSID} whsDS={item.WHSNMDS}>Items</OpcoItemButton></div>): (getKeyValue(item, columnKey))}</TableCell>}
+                  {(columnKey) => <TableCell>{columnKey === 'Item' ? (<div className="flex items-center justify-center"><OpcoItemButton whsId={item.WHSID} whsDS={item.WHSNMDS}>Items</OpcoItemButton></div>): (getKeyValue(item, columnKey))}</TableCell>}
                 </TableRow>
               )}
             </TableBody>

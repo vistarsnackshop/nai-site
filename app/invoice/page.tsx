@@ -7,6 +7,7 @@ import { useAsyncList } from "@react-stately/data";
 import { Invoice, InvoiceLine } from "../invoice/column";
 import { useSearchParams } from "next/navigation";
 import Header from "../header/header";
+import { useSession } from "next-auth/react"; 
 
 type RangeValue<T> = { start: T; end: T } | null | undefined;
 
@@ -24,9 +25,10 @@ export default function ViewInvoice() {
     };
 
     const searchParams = useSearchParams()!;
-    const username = searchParams.get("username");
     const whsId = searchParams.get("whsId");
     const itemId = searchParams.get("itemId");
+    const { data: session } = useSession();
+    const username = session?.user?.name;
     let startDate = '';
     let endDate = '';
 
@@ -69,12 +71,19 @@ export default function ViewInvoice() {
                 startDate = formatDate(dateRange.start);
                 endDate = formatDate(dateRange.end);
             }
+            
+            if (startDate && endDate) {
+                let res = await fetchData(username as string, whsId as string, itemId as string, startDate, endDate);
+                setIsLoading(false);
 
-            let res = await fetchData(username as string, whsId as string, itemId as string, startDate, endDate);
+                return {
+                    items: res,
+                };
+            }
+
             setIsLoading(false);
-
             return {
-                items: res,
+                items: [],
             };
         },
 
@@ -117,11 +126,11 @@ export default function ViewInvoice() {
     return (
         <div>
             <div className="mb-5 flex justify-center">
-                <Header username="yennetest" />
+                <Header username={username as string}/>
             </div>
             <div className="w-2/3 mx-auto">
                 <DateRangePicker
-                    className="w-1/6"
+                    className="w-full sm:w-full md:w-full lg:w-full xl:w-1/3"
                     label="Viewing"
                     description="Select Period To Display Invoices"
                     isRequired

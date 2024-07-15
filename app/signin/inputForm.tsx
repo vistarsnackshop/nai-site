@@ -11,16 +11,6 @@ const InputForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
 
-  const createQueryString = useCallback(
-    (name: string, value:string) => {
-      const params = new URLSearchParams();
-      params.set(name, value);
-
-      return params.toString();
-    },
-    []
-  );
-
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -40,8 +30,8 @@ const InputForm = () => {
       if (response?.error) {
         setError("Invalid username or password"); // Set generic error message
       } else {
-        const username = formData.get("username") as string;
-        router.push(`/browsepage?${createQueryString("username", username)}`);
+        router.push("/browsepage");
+        router.refresh();
       }
     } catch (error) {
       console.error("Login error:", error);

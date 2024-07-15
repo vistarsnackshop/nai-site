@@ -12,10 +12,10 @@ import {
 } from "@nextui-org/react";
 import { useAsyncList } from "@react-stately/data";
 import { Bid, columns } from "../browsebids/column";
-import { useSearchParams } from "next/navigation";
 import BidItemButton from "../buttoncomponents/bidItems";
 import Header from "../header/header";
 import Breadcrumbs from "../header/breadcrumb";
+import { useSession } from "next-auth/react"; 
 
 export default function BrowseBids() {
   //get query to connect to this table without having to hardcode
@@ -27,12 +27,12 @@ export default function BrowseBids() {
     return json;
   };
 
-  const searchParams = useSearchParams()!;
-  const username = searchParams.get("username");
+  const { data: session } = useSession();
+  const username = session?.user?.name;
 
   const breadcrumbs = [
-    { name: "Home", href: `/browsepage?username=${username}` },
-    { name: "View Bids", href: `/browsebids?username=${username}` },
+    { name: "Home", href: "/browsepage" },
+    { name: "View Bids", href: "/browsebids" },
   ];
 
   const [isLoading, setIsLoading] = React.useState(true);
@@ -40,7 +40,6 @@ export default function BrowseBids() {
   let list = useAsyncList<Bid>({
     async load() {
       let res = await fetchData(username as string);
-      //let json = await res.json();
       setIsLoading(false);
       return {
         items: res,
@@ -91,7 +90,7 @@ export default function BrowseBids() {
   return (
     <div>
       <div className="mb-5 flex justify-center">
-        <Header username={username as string} />
+        <Header/>
       </div>
       <div className="my-5 w-2/3 mx-auto">
         <Breadcrumbs breadcrumbs={breadcrumbs} />
@@ -136,6 +135,7 @@ export default function BrowseBids() {
                           username={username as string}
                           bidId={item.BDID}
                           whsId={item.WHSID}
+                          whsDS={item.WHSNMDS}
                         >
                           Items
                         </BidItemButton>

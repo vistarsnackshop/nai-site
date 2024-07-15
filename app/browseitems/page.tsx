@@ -1,7 +1,8 @@
 // Import necessary components and hooks
 "use client"
-import React, { useState } from "react";
-import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Spinner } from "@nextui-org/react";
+import React, { useState, useEffect } from "react";
+import { useSession } from "next-auth/react" 
+import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Spinner, Pagination } from "@nextui-org/react";
 import { useAsyncList } from "@react-stately/data";
 import { Item } from "../browseitems/column";
 import { useSearchParams } from "next/navigation";
@@ -18,11 +19,11 @@ export default function BrowseItems() {
     return json;
   };
 
-  const searchParams = useSearchParams()!;
-  const username = searchParams.get("username");
+  const { data: session } = useSession();
+  const username = session?.user?.name;
 
   const breadcrumbs = [
-    { name: "Home", href: `/browsepage?username=${username}`},
+    { name: "Home", href: "/browsepage"},
     { name: "All Bid Items", href: "/browseitems" },
   ];
 
@@ -30,6 +31,8 @@ export default function BrowseItems() {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
   const [filteredItems, setFilteredItems] = useState<Item[]>([]);
+  const [page, setPage] = useState(1);
+  const rowsPerPage = 20;
 
   // Async list to manage data loading and sorting
   let list = useAsyncList<Item>({
@@ -87,9 +90,17 @@ export default function BrowseItems() {
   };
 
   // Update filtered items when searchQuery changes
-  React.useEffect(() => {
+  useEffect(() => {
     filterItems(searchQuery);
   }, [searchQuery, list.items]);
+
+  // Scroll to the top of the page when the page changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [page]);
+
+  const pages = Math.ceil(filteredItems.length / rowsPerPage);
+  const pageItems = filteredItems.slice((page - 1) * rowsPerPage, page * rowsPerPage);
 
   return (
     <div>
@@ -120,10 +131,24 @@ export default function BrowseItems() {
           aria-label="Example table with client side sorting"
           sortDescriptor={list.sortDescriptor}
           onSortChange={list.sort}
+          bottomContent={
+            <div className="flex w-full justify-center">
+              <Pagination
+                isCompact
+                showControls
+                showShadow
+                color="secondary"
+                page={page}
+                total={pages}
+                onChange={(page) => setPage(page)}
+              />
+            </div>
+          }
           classNames={{
             table: "min-h-[400px]",
           }}
         >
+
           <TableHeader>
             <TableColumn key="ITMID" allowsSorting>
               Item No.
@@ -136,7 +161,7 @@ export default function BrowseItems() {
             </TableColumn>
           </TableHeader>
           <TableBody
-            items={filteredItems} // Render filtered items
+            items={pageItems} // Render filtered items
             isLoading={isLoading}
             loadingContent={<Spinner label="Loading..." />}
           >
@@ -147,7 +172,6 @@ export default function BrowseItems() {
                     {columnKey === "Opco" ? (
                       <div className="flex items-center justify-center">
                         <ItemOpcoButton
-                          username={username as string}
                           itemId={item.ITMID}
                           itemDS={item.ITEMDS}
                         >
@@ -167,3 +191,4 @@ export default function BrowseItems() {
     </div>
   );
 }
+

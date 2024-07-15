@@ -4,7 +4,7 @@ import React from 'react';
 const Footer: React.FC = () => {
   return (
     <footer className="w-full font-[sans-serif] text-[#333]">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-8 py-10 max-sm:max-w-sm max-sm:mx-auto gap-y-8">
                 <div className="col-span-full mb-10 lg:col-span-2 lg:mb-0">
                     <a href="https://vistar.com/"  className="flex justify-center lg:justify-start">

@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { DateRangePicker } from "@nextui-org/react";
 import { CalendarDate } from "@internationalized/date";
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, getKeyValue, Spinner, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@nextui-org/react";
@@ -36,7 +36,6 @@ export default function ViewInvoice() {
 
     const handleDateChange = (value: RangeValue<CalendarDate>) => {
         setDateRange(value);
-        list.reload();
     };
 
     const formatDate = (date: CalendarDate) => {
@@ -123,10 +122,14 @@ export default function ViewInvoice() {
         },
     });
 
+    useEffect(() => {
+        list.reload();
+    }, [dateRange]);
+
     return (
         <div>
             <div className="mb-5 flex justify-center">
-                <Header username={username as string}/>
+                <Header/>
             </div>
             <div className="w-2/3 mx-auto">
                 <DateRangePicker
@@ -134,6 +137,7 @@ export default function ViewInvoice() {
                     label="Viewing"
                     description="Select Period To Display Invoices"
                     isRequired
+                    visibleMonths={2}
                     value={dateRange}
                     onChange={handleDateChange}
                 />

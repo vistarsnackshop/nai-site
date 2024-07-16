@@ -154,7 +154,7 @@ export default function BrowseBidItem() {
                 {/* Table component */}
                 <Table
                     isStriped
-                    aria-label="Example table with client side sorting"
+                    aria-label="Table listing all bid items"
                     sortDescriptor={list.sortDescriptor}
                     onSortChange={list.sort}
                     bottomContent={

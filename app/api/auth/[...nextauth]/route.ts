@@ -34,6 +34,9 @@ const handler = NextAuth({
   // Session configuration
   session: {
     strategy: 'jwt', // Use JWT strategy for sessions
+
+    // 10 minutes - How long until an idle session expires and is no longer valid.
+    maxAge: 10*60,
   },
   pages: {
     signIn: '/signin',
@@ -67,9 +70,9 @@ const handler = NextAuth({
 
         // Retrieve the user object from the database response
         const user = response[0];
-        
-        // Check if the provided password matches the stored password (case insensitive)
-        const passwordCorrect = (credentials?.password.toUpperCase() || '') == user.USRPWD.trim();
+
+        // Check if the provided password(Truncated MD5) matches the stored password (case insensitive, MD5 Hash)
+        const passwordCorrect = (md5Hash(credentials?.password.toLowerCase() as string).substring(0,10)|| '') == user.USRPWD.trim();
         
         // If password is correct, return user information for authentication
         if (passwordCorrect){

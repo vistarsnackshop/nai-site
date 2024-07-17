@@ -3,13 +3,16 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { NextRequest } from "next/server";
 import { useSearchParams } from "next/navigation";
 
+// Get the current date in YYYYMMDD format
 const currentDate = new Date();
 const year = currentDate.getFullYear();
 const month = currentDate.getMonth() + 1; // getMonth() returns 0-based month
 const day = currentDate.getDate();
+
 // Combine the year, month, and day into the format YYYYMMDD
 const dateAsInteger = day + 100 * month + 10000 * year;
 
+// Function to extract query parameters from the request
 const getParamsObject = (request: NextRequest): { [key: string]: string } => {
   const params: { [key: string]: string } = {};
   for (const [key, val] of request.nextUrl.searchParams.entries()) {
@@ -22,6 +25,7 @@ const odbc = require('odbc');
 
 const connectionString = process.env.CONNECTION_STRING;
 
+// Function to fetch bid data from the database
 async function fetchData(username:string) {
   const ccnumQuery = 'select CCUSTNUM from nai.USERS where USRPRF = ?';
   const ccnumParams = [username.toUpperCase()];

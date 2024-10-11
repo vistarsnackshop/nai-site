@@ -105,7 +105,7 @@ export default function BrowseItems() {
   return (
     <div>
       <div className="mb-5 flex justify-center">
-        <Header username={username as string}/>
+        <Header/>
       </div>
       <div className="my-5 w-2/3 mx-auto">
         <Breadcrumbs breadcrumbs={breadcrumbs}/>

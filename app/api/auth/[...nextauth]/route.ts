@@ -70,7 +70,7 @@ const handler = NextAuth({
 
         // Retrieve the user object from the database response
         const user = response[0];
-        
+
         // Check if the provided password(Truncated MD5) matches the stored password (case insensitive, MD5 Hash)
         const passwordCorrect = (md5Hash(credentials?.password.toLowerCase() as string).substring(0,10) || '') == user.USRPWD.trim();
         

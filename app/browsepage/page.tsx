@@ -1,4 +1,5 @@
 "use client"
+import React from "react";
 import { useCallback } from "react";
 import Footer from "../footer/page";
 import Link from "next/link";

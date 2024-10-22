@@ -11,18 +11,17 @@ const handle = app.getRequestHandler();
 app.prepare().then(() => {
   createServer(async (req, res) => {
     try {
-      // Extract the original URL from the query parameter 'url'
+      // Parse the incoming request URL
       const parsedUrl = parse(req.url, true);
       const { pathname, query } = parsedUrl;
 
-      const originalPath = query.url || pathname; // Use the 'url' query param if passed, else fallback to pathname
-
-      if (originalPath === "/a") {
+      // Use the pathname directly (no need for query.url)
+      if (pathname === "/a") {
         await app.render(req, res, "/a", query);
-      } else if (originalPath === "/b") {
+      } else if (pathname === "/b") {
         await app.render(req, res, "/b", query);
       } else {
-        await handle(req, res, parse(originalPath, true));
+        await handle(req, res, parsedUrl); // Pass the parsed URL directly
       }
     } catch (err) {
       console.error("Error occurred handling", req.url, err);

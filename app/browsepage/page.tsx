@@ -6,7 +6,7 @@ import Link from "next/link";
 import Header from "../header/header";
 import { useSession } from "next-auth/react"; 
 
-export default function browsePage() {
+export default function BrowsePage() {
 
   const createQueryString = useCallback(
     (name: string, value:string) => {

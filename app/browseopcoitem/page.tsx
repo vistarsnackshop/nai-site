@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, getKeyValue, Spinner, Pagination } from "@nextui-org/react";
 import { useAsyncList } from "@react-stately/data";
 import { Item } from "../browseopcoitem/column";

@@ -1,4 +1,4 @@
-'use client'
+"use client"
 import React, { useState, useEffect, Suspense } from "react";
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, getKeyValue, Spinner, Pagination } from "@nextui-org/react";
 import { useAsyncList } from "@react-stately/data";
@@ -18,7 +18,7 @@ export default function BrowseOpcoItem() {
         let json = await res.json();
         return json;
     };
-
+    
     const searchParams = useSearchParams()!;
     const whsId = searchParams.get("whsid");
     const { data: session } = useSession();

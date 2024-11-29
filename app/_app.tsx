@@ -8,9 +8,7 @@ export default function MyApp({ Component, pageProps: { session, ...pageProps } 
   return (
     <SessionProvider session={session} refetchInterval={5 * 60}>
       <RootLayout>
-        <Suspense fallback={null}>
           <Component {...pageProps} />
-        </Suspense>
       </RootLayout>
     </SessionProvider>
   );

@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { DateRangePicker } from "@nextui-org/react";
 import { CalendarDate } from "@internationalized/date";
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, getKeyValue, Spinner, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@nextui-org/react";
@@ -11,7 +11,7 @@ import { useSession } from "next-auth/react";
 
 type RangeValue<T> = { start: T; end: T } | null | undefined;
 
-export default function ViewInvoice() {
+function InvoiceContent() {
     const fetchData = async (username: string, whsId: string, itemId: string, startDate: string, endDate: string) => {
         let res = await fetch(`http://localhost:3000/api/invoiceData?username=${username}&whsId=${whsId}&itemId=${itemId}&startDate=${startDate}&endDate=${endDate}`);
         let json = await res.json();
@@ -219,5 +219,13 @@ export default function ViewInvoice() {
                 </Modal>
             )}
         </div>
+    );
+}
+
+export default function ViewInvoice() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+          <InvoiceContent />
+        </Suspense> 
     );
 }

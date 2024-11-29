@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, getKeyValue, Spinner, Pagination } from "@nextui-org/react";
 import { useAsyncList } from "@react-stately/data";
 import { Item } from "../browsebiditem/column";
@@ -9,9 +9,9 @@ import Breadcrumbs from "../header/breadcrumb";
 import InventoryButton from "../buttoncomponents/inventoryButton";
 import InvoiceButton from "../buttoncomponents/invoiceButton";
 import { FaMagnifyingGlass } from "react-icons/fa6";
-import { useSession } from "next-auth/react"; 
+import { useSession } from "next-auth/react";
 
-export default function BrowseBidItem() {
+function BrowseBidItemContent() {
     //get query to connect to this table without having to hardcode
     const fetchData = async (username: string, bidId: string) => {
         let res = await fetch(`http://localhost:3000/api/bidItemData?username=${username}&bidid=${bidId}`);
@@ -159,7 +159,7 @@ export default function BrowseBidItem() {
                     onSortChange={list.sort}
                     bottomContent={
                         <div className="flex w-full justify-center">
-                          <Pagination
+                        <Pagination
                             isCompact
                             showControls
                             showShadow
@@ -167,7 +167,7 @@ export default function BrowseBidItem() {
                             page={page}
                             total={pages}
                             onChange={(page) => setPage(page)}
-                          />
+                        />
                         </div>
                     }
                     classNames={{
@@ -209,5 +209,13 @@ export default function BrowseBidItem() {
                 </Table>
             </div>
         </div>
+    );
+}
+
+export default function BrowseBidItem() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+          <BrowseBidItemContent />
+        </Suspense> 
     );
 }

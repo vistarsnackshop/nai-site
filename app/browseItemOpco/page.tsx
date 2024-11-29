@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, getKeyValue, Spinner } from "@nextui-org/react";
 import { useAsyncList } from "@react-stately/data";
 import { Opco, columns } from "../browseItemOpco/column";
@@ -10,7 +10,7 @@ import Header from "../header/header";
 import Breadcrumbs from "../header/breadcrumb";
 import { useSession } from "next-auth/react"; 
 
-export default function BrowseItemOpco() {
+function BrowseItemOpcoContent() {
     //get query to connect to this table without having to hardcode
     const fetchData = async (username: string, itemId: string) => {
         let res = await fetch(`http://localhost:3000/api/itmOpcoData?username=${username}&itemId=${itemId}`);
@@ -137,5 +137,13 @@ export default function BrowseItemOpco() {
                 </Table>
             </div>
         </div>
+    );
+}
+
+export default function BrowseItemOpco() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+          <BrowseItemOpcoContent />
+        </Suspense> 
     );
 }

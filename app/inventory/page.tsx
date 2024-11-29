@@ -1,4 +1,5 @@
 "use client"
+import {Suspense} from 'react';
 import { useSearchParams } from "next/navigation";
 import InventoryStatsGrid from "../dashboardcomponents/inventoryStatsGrid";
 import InventoryChart from "../dashboardcomponents/inventoryBarChart";
@@ -10,8 +11,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from 'next/navigation';
 import { IoArrowBackCircle } from 'react-icons/io5';
 
-
-export default function InventoryPage() {
+function InventoryPageContent() {
     const router = useRouter();
     const searchParams = useSearchParams()!;
     const itemId = searchParams.get("itemId");
@@ -44,5 +44,13 @@ export default function InventoryPage() {
                 </div>
             </div>
         </>
+    );
+}
+
+export default function InventoryPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+          <InventoryPageContent />
+        </Suspense> 
     );
 }

@@ -2,10 +2,10 @@ const { createServer } = require("http");
 const { parse } = require("url");
 const next = require("next");
 
-const dev = process.env.NODE_ENV !== "production";
+const dev = process.env.NODE_ENV !== "production"; // Determines if it's in dev or production mode
+const port = 3000; // Explicitly set the port for your app to listen on
 
-const port = process.env.PORT || 3000; // Change the port to the port that your IIS is running on. Default its 80 and 3000 if you are using it for developing.
-const hostname = "localhost";
+const hostname = "localhost"; // Ensure this matches your hostname
 const app = next({ dev, hostname, port });
 const handle = app.getRequestHandler();
 

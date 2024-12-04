@@ -2,7 +2,8 @@ const { createServer } = require('http');
 const { parse } = require('url');
 const next = require('next');
 
-const port = parseInt(process.env.PORT || '3000', 10);
+// Explicitly set the port to 443
+const port = 443;
 const dev = process.env.NODE_ENV !== 'production';
 
 console.log(`Starting server...`);
@@ -25,7 +26,7 @@ app.prepare().then(() => {
     if (err) {
       console.error('Error starting server:', err);
     } else {
-      console.log(`> Server listening at http://localhost:${port} as ${dev ? 'development' : process.env.NODE_ENV}`);
+      console.log(`> Server listening at https://localhost:${port} as ${dev ? 'development' : process.env.NODE_ENV}`);
     }
   });
 }).catch((err) => {

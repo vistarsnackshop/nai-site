@@ -4,7 +4,6 @@ const nextConfig = {
     appDir: true,
     serverComponentsExternalPackages: ["odbc"],
   },
-  basePath: '/nai',
 };
 
 export default nextConfig;

@@ -1,46 +1,38 @@
 const { createServer } = require("http");
 const { parse } = require("url");
 const next = require("next");
-const path = require("path");
-const fs = require("fs");
 
 const dev = process.env.NODE_ENV !== "production";
-const port = process.env.PORT || 3000;
+
+const port = 3000; // Change the port to the port that your IIS is running on. Default its 80 and 3000 if you are using it for developing.
 const hostname = "localhost";
 const app = next({ dev, hostname, port });
 const handle = app.getRequestHandler();
 
 app.prepare().then(() => {
   createServer(async (req, res) => {
-    const parsedUrl = parse(req.url, true);
-    const { pathname } = parsedUrl;
-
     try {
-      // Serve only _next/static
-      if (pathname.startsWith("/_next/static")) {
-        const filePath = path.join(__dirname, ".next", pathname.replace("/_next/static", "static"));
-        
-        // Debugging log for resolved file path
-        console.log("Resolved file path:", filePath);
+      const parsedUrl = parse(req.url, true);
+      const { pathname, query } = parsedUrl;
 
-        if (fs.existsSync(filePath)) {
-          res.writeHead(200, { "Content-Type": "application/octet-stream" });
-          fs.createReadStream(filePath).pipe(res);
-          return;
-        }
-        res.statusCode = 404;
-        res.end("Not Found");
-        return;
+      if (pathname === "/a") {
+        await app.render(req, res, "/a", query);
+      } else if (pathname === "/b") {
+        await app.render(req, res, "/b", query);
+      } else {
+        await handle(req, res, parsedUrl);
       }
-
-      // Handle all other requests with Next.js
-      await handle(req, res, parsedUrl);
     } catch (err) {
       console.error("Error occurred handling", req.url, err);
       res.statusCode = 500;
-      res.end("Internal Server Error");
+      res.end("internal server error");
     }
-  }).listen(port, () => {
-    console.log(`> Ready on http://localhost:${port}`);
-  });
+  })
+    .once("error", (err) => {
+      console.error(err);
+      process.exit(1);
+    })
+    .listen(port, async () => {
+      console.log(`> Ready on http://localhost:${port}`);
+    });
 });

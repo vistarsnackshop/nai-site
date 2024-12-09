@@ -19,6 +19,10 @@ app.prepare().then(() => {
       // Serve only _next/static
       if (pathname.startsWith("/_next/static")) {
         const filePath = path.join(__dirname, ".next", pathname.replace("/_next/static", "static"));
+        
+        // Debugging log for resolved file path
+        console.log("Resolved file path:", filePath);
+
         if (fs.existsSync(filePath)) {
           res.writeHead(200, { "Content-Type": "application/octet-stream" });
           fs.createReadStream(filePath).pipe(res);
